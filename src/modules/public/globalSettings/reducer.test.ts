@@ -8,18 +8,20 @@ describe('Change color theme reducer', () => {
             chartRebuild: false,
             sideBarActive: false,
             marketSelectorActive: false,
-            isMobileDevice: false,
         };
-        expect(changeColorThemeReducer(initialChangeColorThemeState, actions.changeColorTheme('light'))).toEqual(expectedState);
+        expect(changeColorThemeReducer(initialChangeColorThemeState, actions.changeColorTheme('light'))).toEqual(
+            expectedState
+        );
         expect(localStorage.getItem('colorTheme')).toEqual('light');
         expectedState = {
             color: 'dark',
             chartRebuild: false,
             sideBarActive: false,
             marketSelectorActive: false,
-            isMobileDevice: false,
         };
-        expect(changeColorThemeReducer(initialChangeColorThemeState, actions.changeColorTheme('dark'))).toEqual(expectedState);
+        expect(changeColorThemeReducer(initialChangeColorThemeState, actions.changeColorTheme('dark'))).toEqual(
+            expectedState
+        );
         expect(localStorage.getItem('colorTheme')).toEqual('dark');
     });
 });

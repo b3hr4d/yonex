@@ -1,6 +1,5 @@
 import classnames from 'classnames';
 import * as React from 'react';
-import { DropdownComponent } from '../Dropdown';
 
 export enum HideMode {
     hide = 'hide',
@@ -58,7 +57,6 @@ export interface TabPanelProps {
     /**
      * Determines whether tab header should looks like dropdown or tab switcher
      */
-    isMobileDevice?: boolean;
 }
 
 /**
@@ -70,7 +68,6 @@ export const TabPanel: React.FC<TabPanelProps> = ({
     panels,
     optionalHead,
     currentTabIndex,
-    isMobileDevice,
     onCurrentTabChange,
     onTabChange,
 }) => {
@@ -137,25 +134,12 @@ export const TabPanel: React.FC<TabPanelProps> = ({
     );
 
     const tabPanelRender = React.useCallback(() => {
-        if (isMobileDevice) {
-            return (
-                <div className="cr-tab-panel__dropdown">
-                    <DropdownComponent
-                        list={dropdownLabels()}
-                        className="cr-dropdown--mobile"
-                        onSelect={handleOrderTypeChange}
-                        placeholder=""
-                    />
-                </div>
-            );
-        } else {
-            return (
-                <div className={'cr-tab-panel__navigation-container-navigation'} role="tablist">
-                    {panels.map(renderTabPanel)}
-                </div>
-            );
-        }
-    }, [dropdownLabels, handleOrderTypeChange, isMobileDevice, panels, renderTabPanel]);
+        return (
+            <div className={'cr-tab-panel__navigation-container-navigation'} role="tablist">
+                {panels.map(renderTabPanel)}
+            </div>
+        );
+    }, [dropdownLabels, handleOrderTypeChange, panels, renderTabPanel]);
 
     const renderTabContent = React.useCallback(
         (tab: Tab, index: number) => {

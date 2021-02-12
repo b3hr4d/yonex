@@ -1,12 +1,9 @@
 import cr from 'classnames';
 import React, { FormEvent } from 'react';
 import { Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { CustomInput } from '../CustomInput';
-import { CloseIcon } from '../../assets/images/CloseIcon';
 import { EMAIL_REGEX } from '../../helpers';
 import { GeetestCaptchaResponse } from '../../modules';
-import { selectMobileDeviceState } from '../../modules/public/globalSettings';
+import { CustomInput } from '../CustomInput';
 
 export interface EmailFormProps {
     title?: string;
@@ -33,8 +30,6 @@ export interface EmailFormProps {
 }
 
 export const EmailForm: React.FC<EmailFormProps> = (props) => {
-    const isMobileDevice = useSelector(selectMobileDeviceState);
-
     const {
         title,
         buttonLabel,
@@ -101,18 +96,6 @@ export const EmailForm: React.FC<EmailFormProps> = (props) => {
     return (
         <form>
             <div className={emailFormClass}>
-                {!isMobileDevice && (
-                    <div className="cr-email-form__options-group">
-                        <div className="cr-email-form__option">
-                            <div className="cr-email-form__option-inner">
-                                {title || 'Forgot password'}
-                                <div className="cr-email-form__cros-icon" onClick={handleCancel}>
-                                    <CloseIcon className="close-icon" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
                 <div className="cr-email-form__form-content">
                     <div className="cr-email-form__header">{message}</div>
                     <div className={emailGroupClass}>
@@ -126,7 +109,7 @@ export const EmailForm: React.FC<EmailFormProps> = (props) => {
                             handleFocusInput={props.handleFieldFocus}
                             classNameLabel="cr-email-form__label"
                             classNameInput="cr-email-form__input"
-                            autoFocus={!isMobileDevice}
+                            autoFocus={true}
                         />
                         {emailError && <div className="cr-email-form__error">{emailError}</div>}
                     </div>
@@ -136,7 +119,7 @@ export const EmailForm: React.FC<EmailFormProps> = (props) => {
                             block={true}
                             type="button"
                             disabled={isButtonDisabled()}
-                            onClick={e => handleClick(e as any)}
+                            onClick={(e) => handleClick(e as any)}
                             size="lg"
                             variant="primary">
                             {isLoading ? 'Loading...' : buttonLabel ? buttonLabel : 'Send'}
@@ -146,4 +129,4 @@ export const EmailForm: React.FC<EmailFormProps> = (props) => {
             </div>
         </form>
     );
-}
+};

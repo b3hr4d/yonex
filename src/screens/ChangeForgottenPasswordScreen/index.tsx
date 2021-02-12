@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { injectIntl } from 'react-intl';
-import {
-  connect,
-  MapDispatchToPropsFunction,
-  MapStateToProps,
-} from 'react-redux';
+import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { RouterProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 import { IntlProps } from '../../';
@@ -15,10 +11,10 @@ import {
     changeLanguage,
     Configs,
     entropyPasswordFetch,
-    RootState, selectChangeForgotPasswordSuccess,
+    RootState,
+    selectChangeForgotPasswordSuccess,
     selectConfigs,
     selectCurrentPasswordEntropy,
-    selectMobileDeviceState,
 } from '../../modules';
 
 interface ChangeForgottenPasswordState {
@@ -27,7 +23,6 @@ interface ChangeForgottenPasswordState {
 
 interface ReduxProps {
     changeForgotPassword?: boolean;
-    isMobileDevice: boolean;
     configs: Configs;
     currentPasswordEntropy: number;
 }
@@ -73,20 +68,20 @@ class ChangeForgottenPasswordComponent extends React.Component<Props, ChangeForg
     }
 
     public componentWillReceiveProps(next: Props) {
-        if (next.changeForgotPassword && (!this.props.changeForgotPassword)) {
+        if (next.changeForgotPassword && !this.props.changeForgotPassword) {
             this.props.history.push('/signin');
         }
     }
 
     public render() {
-        const { isMobileDevice, configs, currentPasswordEntropy } = this.props;
+        const { configs, currentPasswordEntropy } = this.props;
 
         return (
             <div className="pg-change-forgotten-password-screen">
                 <div className="pg-change-forgotten-password-screen__container">
                     <ChangePassword
                         handleChangePassword={this.handleSendNewPassword}
-                        title={!isMobileDevice && this.props.intl.formatMessage({id: 'page.header.signIn.resetPassword.title'})}
+                        title={this.props.intl.formatMessage({ id: 'page.header.signIn.resetPassword.title' })}
                         configs={configs}
                         currentPasswordEntropy={currentPasswordEntropy}
                         fetchCurrentPasswordEntropy={this.props.fetchCurrentPasswordEntropy}
@@ -97,7 +92,7 @@ class ChangeForgottenPasswordComponent extends React.Component<Props, ChangeForg
         );
     }
 
-    private handleSendNewPassword = payload => {
+    private handleSendNewPassword = (payload) => {
         const { confirmToken } = this.state;
         this.props.changeForgotPasswordFetch({
             ...payload,
@@ -106,22 +101,20 @@ class ChangeForgottenPasswordComponent extends React.Component<Props, ChangeForg
     };
 }
 
-const mapStateToProps: MapStateToProps<ReduxProps, {}, RootState> = state => ({
+const mapStateToProps: MapStateToProps<ReduxProps, {}, RootState> = (state) => ({
     changeForgotPassword: selectChangeForgotPasswordSuccess(state),
-    isMobileDevice: selectMobileDeviceState(state),
     currentPasswordEntropy: selectCurrentPasswordEntropy(state),
     configs: selectConfigs(state),
 });
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> =
-    dispatch => ({
-        changeForgotPasswordFetch: credentials => dispatch(changeForgotPasswordFetch(credentials)),
-        changeLanguage: lang => dispatch(changeLanguage(lang)),
-        fetchCurrentPasswordEntropy: payload => dispatch(entropyPasswordFetch(payload)),
-    });
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => ({
+    changeForgotPasswordFetch: (credentials) => dispatch(changeForgotPasswordFetch(credentials)),
+    changeLanguage: (lang) => dispatch(changeLanguage(lang)),
+    fetchCurrentPasswordEntropy: (payload) => dispatch(entropyPasswordFetch(payload)),
+});
 
 export const ChangeForgottenPasswordScreen = compose(
     injectIntl,
     withRouter,
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(mapStateToProps, mapDispatchToProps)
 )(ChangeForgottenPasswordComponent) as React.ComponentClass;

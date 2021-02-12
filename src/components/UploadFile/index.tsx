@@ -11,7 +11,6 @@ interface OwnPropsTranslations {
     sizesText?: string;
     formatsText?: string;
     tipText?: string;
-    isMobileDevice?: boolean;
 }
 
 interface OwnProps extends OwnPropsTranslations {
@@ -33,7 +32,6 @@ const UploadFileComponent: React.FC<Props> = ({
     tipText,
     exampleImagePath,
     id,
-    isMobileDevice,
     uploadedFile,
     accept = 'application/pdf,image/jpeg,image/png',
     handleUploadScan,
@@ -83,7 +81,7 @@ const UploadFileComponent: React.FC<Props> = ({
                         onChange={handleUploadScan}
                     />
                     <div className="pg-upload-file__content__form__info">
-                        {exampleImagePath && isMobileDevice ? (
+                        {exampleImagePath ? (
                             <div className="pg-upload-file__doc-image">
                                 <img src={exampleImagePath} alt={`${label} example`} />
                             </div>
@@ -107,7 +105,7 @@ const UploadFileComponent: React.FC<Props> = ({
                     </div>
                 </div>
             </div>
-            {exampleImagePath && !isMobileDevice ? (
+            {exampleImagePath ? (
                 <div className="pg-upload-file__doc-image">
                     <img src={exampleImagePath} alt={`${label} example`} />
                 </div>

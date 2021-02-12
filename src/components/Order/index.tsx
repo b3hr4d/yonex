@@ -89,7 +89,6 @@ export interface OrderComponentProps {
      * default tab index
      */
     defaultTabIndex?: number;
-    isMobileDevice?: boolean;
     currentMarketFilters: FilterPrice[];
     translate: (id: string, value?: any) => string;
 }
@@ -100,10 +99,7 @@ interface State {
     amountBuy: string;
 }
 
-const defaultOrderTypes: DropdownElem[] = [
-    'Limit',
-    'Market',
-];
+const defaultOrderTypes: DropdownElem[] = ['Limit', 'Market'];
 
 const splitBorder = 449;
 const defaultWidth = 635;
@@ -124,9 +120,7 @@ export class Order extends React.Component<OrderComponentProps, State> {
     }
 
     public render() {
-        const {
-            width = defaultWidth,
-        } = this.props;
+        const { width = defaultWidth } = this.props;
 
         if (width < splitBorder) {
             return (
@@ -180,7 +174,6 @@ export class Order extends React.Component<OrderComponentProps, State> {
             asks,
             bids,
             currentMarketFilters,
-            isMobileDevice,
             listenInputPrice,
             translate,
         } = this.props;
@@ -191,11 +184,9 @@ export class Order extends React.Component<OrderComponentProps, State> {
         const priceMarket = this.isTypeSell(type) ? priceMarketSell : priceMarketBuy;
         const disabledData = this.isTypeSell(type) ? {} : { disabled };
         const amount = this.isTypeSell(type) ? amountSell : amountBuy;
-        const preLabel = this.isTypeSell(type) ? (
-            translate('page.body.trade.header.newOrder.content.tabs.sell')
-        ) : (
-            translate('page.body.trade.header.newOrder.content.tabs.buy')
-        );
+        const preLabel = this.isTypeSell(type)
+            ? translate('page.body.trade.header.newOrder.content.tabs.sell')
+            : translate('page.body.trade.header.newOrder.content.tabs.buy');
         const label = this.isTypeSell(type) ? 'Sell' : 'Buy';
 
         return {
@@ -219,7 +210,6 @@ export class Order extends React.Component<OrderComponentProps, State> {
                     handleAmountChange={this.handleAmountChange}
                     handleChangeAmountByButton={this.handleChangeAmountByButton}
                     currentMarketFilters={currentMarketFilters}
-                    isMobileDevice={isMobileDevice}
                     translate={translate}
                 />
             ),
@@ -233,7 +223,7 @@ export class Order extends React.Component<OrderComponentProps, State> {
 
     private handleChangeTab = (index: number, label?: string) => {
         if (this.props.handleSendType && label) {
-          this.props.handleSendType(index, label);
+            this.props.handleSendType(index, label);
         }
 
         this.setState({
@@ -259,15 +249,19 @@ export class Order extends React.Component<OrderComponentProps, State> {
             case 'buy':
                 switch (orderType) {
                     case 'Limit':
-                        newAmount = available && +price ? (
-                            Decimal.format(available / +price * value, this.props.currentMarketAskPrecision)
-                        ) : '';
+                        newAmount =
+                            available && +price
+                                ? Decimal.format((available / +price) * value, this.props.currentMarketAskPrecision)
+                                : '';
 
                         break;
                     case 'Market':
-                        newAmount = available ? (
-                            Decimal.format(getAmount(Number(available), proposals, value), this.props.currentMarketAskPrecision)
-                        ) : '';
+                        newAmount = available
+                            ? Decimal.format(
+                                  getAmount(Number(available), proposals, value),
+                                  this.props.currentMarketAskPrecision
+                              )
+                            : '';
 
                         break;
                     default:
@@ -275,9 +269,7 @@ export class Order extends React.Component<OrderComponentProps, State> {
                 }
                 break;
             case 'sell':
-                newAmount = available ? (
-                    Decimal.format(available * value, this.props.currentMarketAskPrecision)
-                ) : '';
+                newAmount = available ? Decimal.format(available * value, this.props.currentMarketAskPrecision) : '';
 
                 break;
             default:

@@ -977,7 +977,7 @@ exports[`Markets should render empty data 1`] = `
         "page.header.navbar.signIn": "Sign In",
         "page.header.navbar.trade": "Trade",
         "page.header.navbar.wallets": "Wallets",
-        "page.header.signIN.noAccountYet": "No account yet?",
+        "page.header.signIn.noAccountYet": "No account yet?",
         "page.header.signIn": "Sign In",
         "page.header.signIn.email": "Email",
         "page.header.signIn.forgotPassword": "Forgot password?",

@@ -1,11 +1,7 @@
 import classnames from 'classnames';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
-import {
-    Beneficiaries,
-    CustomInput,
-    SummaryField,
-} from '../../components';
+import { Beneficiaries, CustomInput, SummaryField } from '../../components';
 import { Decimal } from '../../components/Decimal';
 import { cleanPositiveFloatInput, precisionRegExp } from '../../helpers';
 import { Beneficiary } from '../../modules';
@@ -24,7 +20,6 @@ export interface WithdrawProps {
     withdrawTotalLabel?: string;
     withdrawButtonLabel?: string;
     withdrawDone: boolean;
-    isMobileDevice?: boolean;
 }
 
 const defaultBeneficiary: Beneficiary = {
@@ -59,7 +54,10 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
     public componentWillReceiveProps(nextProps) {
         const { currency, withdrawDone } = this.props;
 
-        if ((nextProps && (JSON.stringify(nextProps.currency) !== JSON.stringify(currency))) || (nextProps.withdrawDone && !withdrawDone)) {
+        if (
+            (nextProps && JSON.stringify(nextProps.currency) !== JSON.stringify(currency)) ||
+            (nextProps.withdrawDone && !withdrawDone)
+        ) {
             this.setState({
                 amount: '',
                 otpCode: '',
@@ -69,13 +67,7 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
     }
 
     public render() {
-        const {
-            amount,
-            beneficiary,
-            total,
-            withdrawAmountFocused,
-            otpCode,
-        } = this.state;
+        const { amount, beneficiary, total, withdrawAmountFocused, otpCode } = this.state;
         const {
             className,
             currency,
@@ -85,7 +77,6 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
             withdrawFeeLabel,
             withdrawTotalLabel,
             withdrawButtonLabel,
-            isMobileDevice,
         } = this.props;
 
         const cx = classnames('cr-withdraw', className);
@@ -95,18 +86,14 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
         });
 
         const withdrawAmountClass = classnames('cr-withdraw__group__amount', {
-          'cr-withdraw__group__amount--focused': withdrawAmountFocused,
+            'cr-withdraw__group__amount--focused': withdrawAmountFocused,
         });
 
         return (
             <div className={cx}>
                 <div className="cr-withdraw-column">
                     <div className="cr-withdraw__group__address">
-                        <Beneficiaries
-                            currency={currency}
-                            type={type}
-                            onChangeValue={this.handleChangeBeneficiary}
-                        />
+                        <Beneficiaries currency={currency} type={type} onChangeValue={this.handleChangeBeneficiary} />
                     </div>
                     <div className="cr-withdraw__divider cr-withdraw__divider-one" />
                     <div className={withdrawAmountClass}>
@@ -121,7 +108,7 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
                         />
                     </div>
                     <div className={lastDividerClassName} />
-                    {!isMobileDevice && twoFactorAuthRequired && this.renderOtpCodeInput()}
+                    {twoFactorAuthRequired && this.renderOtpCodeInput()}
                 </div>
                 <div className="cr-withdraw-column">
                     <div>
@@ -136,14 +123,13 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
                             content={this.renderTotal()}
                         />
                     </div>
-                    {isMobileDevice && twoFactorAuthRequired && this.renderOtpCodeInput()}
+                    {twoFactorAuthRequired && this.renderOtpCodeInput()}
                     <div className="cr-withdraw__deep">
                         <Button
                             variant="primary"
                             size="lg"
                             onClick={this.handleClick}
-                            disabled={this.handleCheckButtonDisabled(total, beneficiary, otpCode)}
-                        >
+                            disabled={this.handleCheckButtonDisabled(total, beneficiary, otpCode)}>
                             {withdrawButtonLabel ? withdrawButtonLabel : 'Withdraw'}
                         </Button>
                     </div>
@@ -163,7 +149,10 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
 
         return (
             <span>
-                <Decimal fixed={fixed} thousSep=",">{fee.toString()}</Decimal> {currency.toUpperCase()}
+                <Decimal fixed={fixed} thousSep=",">
+                    {fee.toString()}
+                </Decimal>{' '}
+                {currency.toUpperCase()}
             </span>
         );
     };
@@ -174,55 +163,56 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
 
         return total ? (
             <span>
-                <Decimal fixed={fixed} thousSep=",">{total.toString()}</Decimal> {currency.toUpperCase()}
+                <Decimal fixed={fixed} thousSep=",">
+                    {total.toString()}
+                </Decimal>{' '}
+                {currency.toUpperCase()}
             </span>
-        ) : <span>0 {currency.toUpperCase()}</span>;
+        ) : (
+            <span>0 {currency.toUpperCase()}</span>
+        );
     };
 
     private renderOtpCodeInput = () => {
         const { otpCode, withdrawCodeFocused } = this.state;
         const { withdraw2faLabel } = this.props;
         const withdrawCodeClass = classnames('cr-withdraw__group__code', {
-          'cr-withdraw__group__code--focused': withdrawCodeFocused,
+            'cr-withdraw__group__code--focused': withdrawCodeFocused,
         });
 
         return (
             <React.Fragment>
-              <div className={withdrawCodeClass}>
-                  <CustomInput
-                      type="number"
-                      label={withdraw2faLabel || '2FA code'}
-                      placeholder={withdraw2faLabel || '2FA code'}
-                      defaultLabel="2FA code"
-                      handleChangeInput={this.handleChangeInputOtpCode}
-                      inputValue={otpCode}
-                      handleFocusInput={() => this.handleFieldFocus('code')}
-                      classNameLabel="cr-withdraw__label"
-                      classNameInput="cr-withdraw__input"
-                      autoFocus={false}
-                  />
-              </div>
-              <div className="cr-withdraw__divider cr-withdraw__divider-two" />
+                <div className={withdrawCodeClass}>
+                    <CustomInput
+                        type="number"
+                        label={withdraw2faLabel || '2FA code'}
+                        placeholder={withdraw2faLabel || '2FA code'}
+                        defaultLabel="2FA code"
+                        handleChangeInput={this.handleChangeInputOtpCode}
+                        inputValue={otpCode}
+                        handleFocusInput={() => this.handleFieldFocus('code')}
+                        classNameLabel="cr-withdraw__label"
+                        classNameInput="cr-withdraw__input"
+                        autoFocus={false}
+                    />
+                </div>
+                <div className="cr-withdraw__divider cr-withdraw__divider-two" />
             </React.Fragment>
         );
     };
 
-    private handleClick = () => this.props.onClick(
-        this.state.amount,
-        this.state.total,
-        this.state.beneficiary,
-        this.state.otpCode,
-    );
+    private handleClick = () =>
+        this.props.onClick(this.state.amount, this.state.total, this.state.beneficiary, this.state.otpCode);
 
     private handleFieldFocus = (field: string) => {
         switch (field) {
             case 'amount':
-                this.setState(prev => ({
+                this.setState((prev) => ({
                     withdrawAmountFocused: !prev.withdrawAmountFocused,
                 }));
                 break;
             case 'code':
-                this.setState(prev => ({
+                this.setState((prev) => ({
                     withdrawCodeFocused: !prev.withdrawCodeFocused,
                 }));
                 break;
@@ -236,8 +226,8 @@ export class Withdraw extends React.Component<WithdrawProps, WithdrawState> {
         const convertedValue = cleanPositiveFloatInput(String(value));
 
         if (convertedValue.match(precisionRegExp(fixed))) {
-            const amount = (convertedValue !== '') ? Number(parseFloat(convertedValue).toFixed(fixed)) : '';
-            const total = (amount !== '') ? (amount - this.props.fee).toFixed(fixed) : '';
+            const amount = convertedValue !== '' ? Number(parseFloat(convertedValue).toFixed(fixed)) : '';
+            const total = amount !== '' ? (amount - this.props.fee).toFixed(fixed) : '';
 
             if (Number(total) <= 0) {
                 this.setTotal((0).toFixed(fixed));

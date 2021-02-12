@@ -2,19 +2,11 @@ import cr from 'classnames';
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { CustomInput, PasswordStrengthMeter } from '../';
 import { isUsernameEnabled } from '../../api';
-import {
-    EMAIL_REGEX,
-    ERROR_LONG_USERNAME,
-    ERROR_SHORT_USERNAME,
-    PASSWORD_REGEX,
-    USERNAME_REGEX,
-} from '../../helpers';
+import { EMAIL_REGEX, ERROR_LONG_USERNAME, ERROR_SHORT_USERNAME, PASSWORD_REGEX, USERNAME_REGEX } from '../../helpers';
 import { GeetestCaptchaResponse } from '../../modules';
-import { selectMobileDeviceState } from '../../modules/public/globalSettings';
 
 export interface SignUpFormProps {
     isLoading?: boolean;
@@ -78,10 +70,8 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
     email,
     confirmPassword,
     refId,
-    onSignIn,
     image,
     isLoading,
-    labelSignIn,
     labelSignUp,
     usernameLabel,
     emailLabel,
@@ -123,14 +113,18 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
     clickCheckBox,
     renderCaptcha,
 }) => {
-    const isMobileDevice = useSelector(selectMobileDeviceState);
     const history = useHistory();
     const { formatMessage } = useIntl();
 
     const disableButton = React.useMemo((): boolean => {
-        if (!hasConfirmed || isLoading || !email.match(EMAIL_REGEX) || !password || !confirmPassword ||
-            (isUsernameEnabled() && !username.match(USERNAME_REGEX))) {
-
+        if (
+            !hasConfirmed ||
+            isLoading ||
+            !email.match(EMAIL_REGEX) ||
+            !password ||
+            !confirmPassword ||
+            (isUsernameEnabled() && !username.match(USERNAME_REGEX))
+        ) {
             return true;
         }
         if (captchaType === 'recaptcha' && !reCaptchaSuccess) {
@@ -259,20 +253,6 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
     return (
         <form>
             <div className="cr-sign-up-form" onKeyPress={handleEnterPress}>
-                {!isMobileDevice && (
-                    <div className="cr-sign-up-form__options-group">
-                        <div className="cr-sign-up-form__option">
-                            <div
-                                className="cr-sign-up-form__option-inner cr-sign-in-form__tab-signin"
-                                onClick={onSignIn}>
-                                {labelSignIn || 'Sign In'}
-                            </div>
-                        </div>
-                        <div className="cr-sign-up-form__option">
-                            <div className="cr-sign-up-form__option-inner __selected">{labelSignUp || 'Sign Up'}</div>
-                        </div>
-                    </div>
-                )}
                 <div className="cr-sign-up-form__form-content">
                     {image ? (
                         <h1 className="cr-sign-up-form__title">
@@ -283,8 +263,8 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
                         <div
                             className={cr('cr-sign-up-form__group', {
                                 'cr-sign-up-form__group--focused': usernameFocused,
-                                'cr-sign-up-form__group--errored': username.length &&
-                                !usernameFocused && !username.match(USERNAME_REGEX),
+                                'cr-sign-up-form__group--errored':
+                                    username.length && !usernameFocused && !username.match(USERNAME_REGEX),
                             })}>
                             <CustomInput
                                 type="text"
@@ -296,12 +276,10 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
                                 handleFocusInput={handleFocusUsername}
                                 classNameLabel="cr-sign-up-form__label"
                                 classNameInput="cr-sign-up-form__input"
-                                autoFocus={!isMobileDevice}
+                                autoFocus
                             />
                             {!username.match(USERNAME_REGEX) && !usernameFocused && username.length ? (
-                                <div className="cr-sign-up-form__error">
-                                    {renderUsernameError(username)}
-                                </div>
+                                <div className="cr-sign-up-form__error">{renderUsernameError(username)}</div>
                             ) : null}
                         </div>
                     ) : null}
@@ -319,7 +297,7 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
                             handleFocusInput={handleFocusEmail}
                             classNameLabel="cr-sign-up-form__label"
                             classNameInput="cr-sign-up-form__input"
-                            autoFocus={!isUsernameEnabled() && !isMobileDevice}
+                            autoFocus={!isUsernameEnabled()}
                         />
                         {emailError && <div className="cr-sign-up-form__error">{emailError}</div>}
                     </div>
@@ -380,7 +358,6 @@ const SignUpFormComponent: React.FC<SignUpFormProps> = ({
                             {isLoading ? 'Loading...' : labelSignUp ? labelSignUp : 'Sign up'}
                         </Button>
                     </div>
-                    {isMobileDevice && renderLogIn()}
                 </div>
             </div>
         </form>

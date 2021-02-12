@@ -2,13 +2,11 @@ import cr from 'classnames';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { CustomInput } from '../';
 import { captchaLogin } from '../../api';
 import { EMAIL_REGEX } from '../../helpers';
 import { GeetestCaptchaResponse } from '../../modules';
-import { selectMobileDeviceState } from '../../modules/public/globalSettings';
 
 export interface SignInProps {
     labelSignIn?: string;
@@ -74,7 +72,6 @@ const SignIn: React.FC<SignInProps> = ({
     reCaptchaSuccess,
     renderCaptcha,
 }) => {
-    const isMobileDevice = useSelector(selectMobileDeviceState);
     const history = useHistory();
     const { formatMessage } = useIntl();
 
@@ -106,7 +103,7 @@ const SignIn: React.FC<SignInProps> = ({
     );
 
     const isButtonDisabled = (): boolean => {
-        return ((captchaLogin() && captchaType !== 'none' && !reCaptchaSuccess && !geetestCaptchaSuccess)) ? true : false;
+        return captchaLogin() && captchaType !== 'none' && !reCaptchaSuccess && !geetestCaptchaSuccess ? true : false;
     };
 
     const handleSubmitForm = React.useCallback(() => {
@@ -158,7 +155,7 @@ const SignIn: React.FC<SignInProps> = ({
         () => (
             <div className="pg-sign-in-screen__register">
                 <span>
-                    {formatMessage({ id: 'page.header.signIN.noAccountYet' })}
+                    {formatMessage({ id: 'page.header.signIn.noAccountYet' })}
                     <span onClick={() => history.push('/signup')} className="pg-sign-in-screen__register-button">
                         {formatMessage({ id: 'page.body.landing.header.button3' })}
                     </span>
@@ -171,22 +168,6 @@ const SignIn: React.FC<SignInProps> = ({
     return (
         <form>
             <div className="cr-sign-in-form" onKeyPress={handleEnterPress}>
-                {!isMobileDevice && (
-                    <div className="cr-sign-in-form__options-group">
-                        <div className="cr-sign-in-form__option">
-                            <div className="cr-sign-in-form__option-inner __selected">
-                                {labelSignIn ? labelSignIn : 'Sign In'}
-                            </div>
-                        </div>
-                        <div className="cr-sign-in-form__option">
-                            <div
-                                className="cr-sign-in-form__option-inner cr-sign-in-form__tab-signup"
-                                onClick={onSignUp}>
-                                {labelSignUp ? labelSignUp : 'Sign Up'}
-                            </div>
-                        </div>
-                    </div>
-                )}
                 <div className="cr-sign-in-form__form-content">
                     {image ? (
                         <h1 className="cr-sign-in-form__title">
@@ -206,7 +187,7 @@ const SignIn: React.FC<SignInProps> = ({
                             inputValue={email}
                             handleFocusInput={() => handleFieldFocus('email')}
                             classNameLabel="cr-sign-in-form__label"
-                            autoFocus={!isMobileDevice}
+                            autoFocus
                         />
                         {emailError && <div className={'cr-sign-in-form__error'}>{emailError}</div>}
                     </div>
@@ -228,7 +209,6 @@ const SignIn: React.FC<SignInProps> = ({
                         {passwordError && <div className={'cr-sign-in-form__error'}>{passwordError}</div>}
                     </div>
                     {captchaLogin() && renderCaptcha}
-                    {isMobileDevice && renderForgotButton}
                     <div className="cr-sign-in-form__button-wrapper">
                         <Button
                             block={true}
@@ -240,8 +220,7 @@ const SignIn: React.FC<SignInProps> = ({
                             {isLoading ? 'Loading...' : labelSignIn ? labelSignIn : 'Sign in'}
                         </Button>
                     </div>
-                    {!isMobileDevice && renderForgotButton}
-                    {isMobileDevice && renderRegister}
+                    {renderForgotButton}
                 </div>
             </div>
         </form>

@@ -1,9 +1,8 @@
 import classnames from 'classnames';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import { formatCCYAddress } from '../../helpers';
-import { selectMobileDeviceState, Wallet } from '../../modules';
+import { Wallet } from '../../modules';
 import { CopyableTextField } from '../CopyableTextField';
 import { MetaMaskButton } from '../MetaMaskButton';
 import { QRCode } from '../QRCode';
@@ -51,7 +50,6 @@ export interface DepositCryptoProps {
     disabled?: boolean;
 }
 
-
 /**
  *  Component that displays wallet details that can be used to deposit cryptocurrency.
  */
@@ -66,26 +64,19 @@ const DepositCrypto: React.FunctionComponent<DepositCryptoProps> = (props: Depos
         handleGenerateAddress,
         handleOnCopy,
         text,
-        wallet
+        wallet,
     } = props;
-    const isMobileDevice = useSelector(selectMobileDeviceState);
     const size = dimensions || QR_SIZE;
     const disabled = !wallet.deposit_address?.address;
     const onCopy = !disabled ? handleOnCopy : undefined;
-    const className = classnames('cr-deposit-crypto', {'cr-copyable-text-field__disabled': disabled});
+    const className = classnames('cr-deposit-crypto', { 'cr-copyable-text-field__disabled': disabled });
 
     if (!wallet.deposit_address) {
         return (
             <div className={className}>
                 <div className="cr-deposit-crypto__create">
                     <div className="cr-deposit-crypto__create-btn">
-                        <Button
-                            block={true}
-                            type="button"
-                            onClick={handleGenerateAddress}
-                            size="lg"
-                            variant="primary"
-                        >
+                        <Button block={true} type="button" onClick={handleGenerateAddress} size="lg" variant="primary">
                             {buttonLabel ? buttonLabel : 'Generate deposit address'}
                         </Button>
                     </div>
@@ -94,8 +85,10 @@ const DepositCrypto: React.FunctionComponent<DepositCryptoProps> = (props: Depos
         );
     }
 
-    const walletAddress = wallet.deposit_address && wallet.deposit_address.address ?
-        formatCCYAddress(wallet.currency, wallet.deposit_address.address) : '';
+    const walletAddress =
+        wallet.deposit_address && wallet.deposit_address.address
+            ? formatCCYAddress(wallet.currency, wallet.deposit_address.address)
+            : '';
 
     return (
         <div className={className}>
@@ -103,14 +96,12 @@ const DepositCrypto: React.FunctionComponent<DepositCryptoProps> = (props: Depos
                 <p className="cr-deposit-info">{text}</p>
                 {walletAddress ? (
                     <div className="d-none d-md-block qr-code-wrapper">
-                        <QRCode dimensions={size} data={walletAddress}/>
+                        <QRCode dimensions={size} data={walletAddress} />
                     </div>
                 ) : null}
             </div>
             <div className="cr-deposit-crypto__block">
-                {wallet.currency === 'eth' && !isMobileDevice && walletAddress ? (
-                    <MetaMaskButton depositAddress={walletAddress} />
-                ) : null}
+                {wallet.currency === 'eth' && walletAddress ? <MetaMaskButton depositAddress={walletAddress} /> : null}
                 <form className="cr-deposit-crypto__copyable">
                     <fieldset className="cr-copyable-text-field" onClick={onCopy}>
                         <CopyableTextField
@@ -128,6 +119,4 @@ const DepositCrypto: React.FunctionComponent<DepositCryptoProps> = (props: Depos
     );
 };
 
-export {
-    DepositCrypto,
-};
+export { DepositCrypto };

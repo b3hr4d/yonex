@@ -16,19 +16,17 @@ import {
     alertPush,
     RootState,
     selectCurrentLanguage,
-    selectMobileDeviceState,
     selectSendDocumentsSuccess,
     sendDocuments,
 } from '../../../modules';
 
-import DocumentFrontExample from 'src/assets/images/kyc/DocumentFrontExample.svg';
 import DocumentBackExample from 'src/assets/images/kyc/DocumentBackExample.svg';
+import DocumentFrontExample from 'src/assets/images/kyc/DocumentFrontExample.svg';
 import DocumentSelfieExample from 'src/assets/images/kyc/DocumentSelfieExample.svg';
 
 interface ReduxProps {
     lang: string;
     success?: string;
-    isMobileDevice: boolean;
 }
 
 interface DispatchProps {
@@ -89,7 +87,6 @@ class DocumentsComponent extends React.Component<Props, DocumentsState> {
     }
 
     public render() {
-        const { isMobileDevice } = this.props;
         const {
             fileFront,
             fileBack,
@@ -192,7 +189,6 @@ class DocumentsComponent extends React.Component<Props, DocumentsState> {
                     </div>
                     {this.state.documentsType ? (
                         <UploadFile
-                            isMobileDevice={isMobileDevice}
                             id="fileFront"
                             title={this.translate('page.body.kyc.documents.uploadFile.front.title')}
                             label={this.translate('page.body.kyc.documents.uploadFile.front.label')}
@@ -206,7 +202,6 @@ class DocumentsComponent extends React.Component<Props, DocumentsState> {
                     ) : null}
                     {this.state.documentsType && this.state.documentsType !== 'Passport' ? (
                         <UploadFile
-                            isMobileDevice={isMobileDevice}
                             id="fileBack"
                             title={this.translate('page.body.kyc.documents.uploadFile.back.title')}
                             label={this.translate('page.body.kyc.documents.uploadFile.back.label')}
@@ -220,7 +215,6 @@ class DocumentsComponent extends React.Component<Props, DocumentsState> {
                     ) : null}
                     {this.state.documentsType ? (
                         <UploadFile
-                            isMobileDevice={isMobileDevice}
                             id="fileSelfie"
                             title={this.translate('page.body.kyc.documents.uploadFile.selfie.title')}
                             label={this.translate('page.body.kyc.documents.uploadFile.selfie.label')}
@@ -405,7 +399,6 @@ class DocumentsComponent extends React.Component<Props, DocumentsState> {
 const mapStateToProps = (state: RootState): ReduxProps => ({
     lang: selectCurrentLanguage(state),
     success: selectSendDocumentsSuccess(state),
-    isMobileDevice: selectMobileDeviceState(state),
 });
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => ({
